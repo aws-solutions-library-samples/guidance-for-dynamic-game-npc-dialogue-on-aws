@@ -189,7 +189,7 @@ An Unreal Engine sample project, [AmazonPollyMetaHuman](https://artifacts.kits.e
 
 If you have set the `ENABLE_RAG` parameter to `True` in the `constants.py` file, the following steps will demonstrate how to hydrate the **Amazon OpenSearch Service** vector database for RAG:
 
-1. Use provided copy of [Treasure Island by Robert Louis Stevenson](assets/data/pg120.txt).
+1. Use provided copy of [Treasure Island by Robert Louis Stevenson](assets/data/pg120.txt) to test vector store hydration and RAG.
 2. Using the AWS Console, navigate to Amazon S3 service, and select the bucket with the following format, `<WORKLOAD NAME>-prod-<REGION>-<ACCOUNT NUMBER>`. For example,  `aida-prod-us-west-2-123456789`.
 3. Upload the Treasure Island File, by clicking on the upload button, and selecting the file `pg120.txt` file. This will trigger the **AWS Lambda** function that starts a an **Amazon SageMaker Processing Job** to hydrate the **Amazon OpenSearch Service** database.
 3. Using the AWS console, search for, and click on the **Amazon SageMaker** service to open the service console. Using the navigation panel on the left-hand side, expand the `Processing` option, and then select `Processing jobs`. You'll see a processing job has been started, for example `Ada-RAG-Ingest-01-21-20-13-20`. This jobs executes the process of chunking the ebook data, converting it to embeddings, and hydrating the database. 
