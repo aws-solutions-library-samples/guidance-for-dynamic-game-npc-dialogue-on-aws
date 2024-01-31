@@ -120,9 +120,9 @@ All features for this guidance are only available in the _US East (N. Virginia)_
         - ___Type:___ String
         - ___Example:___ `"us-east-1"`
     - `ENABLE_RAG`
-        - ___Description:___ Wether or not to leverage retrieval-augmented generation. enabling this option will create an **Amazon OpenSearch Service** domain, and an additional API for NPC dialog generation. Set this parameter to `True` to use RAG.
+        - ___Description:___ Wether or not to leverage retrieval-augmented generation. Enabling this option will create an **Amazon OpenSearch Service** domain, and an additional API for NPC dialog generation. Set this parameter to `False` to disable using RAG`.
         - ___Type:___ Bool
-        - ___Default:___ `False`
+        - ___Default:___ `True`
     - `SM_DOMAIN_ID`
         - ___Description:___ The ID for your prerequisite __Amazon SageMaker Domain__ in your configured AWS region. You can view the ID for your domain in the [AWS Console](https://console.aws.amazon.com/sagemaker/), or by running the ```aws sagemaker list-domains --query "Domains[*].DomainId" --output text``` command.
         - ___Type:___ String
@@ -159,12 +159,12 @@ An Unreal Engine sample project, [AmazonPollyMetaHuman](https://artifacts.kits.e
 
 1. Download, and extract the [AmazonPollyMetaHuman](https://artifacts.kits.eventoutfitters.aws.dev/industries/games/AmazonPollyMetaHuman.zip) zipped Unreal Engine project.
 2. Follow the `README.md` file, to get an overview of the sample project, and the prerequisites configured.
-3. From the [CloudFormation console](https://console.aws.amazon.com/cloudformation/home) in your AWS, click the deployed infrastructure stack. Select the `Outputs` tab, and capture the values for `TextApiEndpointUrl` (and `RagApiEndpointUrl`, if the `ENABLE_RAG` parameter is set to `True` in the `constants.py` file).
+3. From the [CloudFormation console](https://console.aws.amazon.com/cloudformation/home) in your AWS, click the deployed infrastructure stack. Select the `Outputs` tab, and capture the values for `TextApiEndpointUrl`, and `RagApiEndpointUrl`.
 4. Launch Unreal Engine and open the sample project, by following the sample project [README](assets/AmazonPollyMetaHuman/README.md).
 5. Using the Unreal Editor, select `File` --> `Generate Visual Studio Code Project` to use VS Code for editing source code.
 6. Using the Unreal Editor, select `File` --> `Open Visual Studio Code` to open the project for code editing.
 7. In VS Code, open the `/Source/AmazonPollyMetaHuman/Private/Private/SpeechComponent.cpp` file for editing.
-8. Navigate to the following code section, and replace the `ComboboxUri` variables with the `TextApiEndpointUrl` (and `RagApiEndpointUrl`, if the `ENABLE_RAG` parameter is set to `True` in the `constants.py` file) CloudFormation outputs.
+8. Navigate to the following code section, and replace the `ComboboxUri` variables with the `TextApiEndpointUrl`, and `RagApiEndpointUrl` CloudFormation outputs.
     ```cpp
         void USpeechComponent::CallAPI(const FString Text, const FString Uri)
         {
@@ -187,7 +187,7 @@ An Unreal Engine sample project, [AmazonPollyMetaHuman](https://artifacts.kits.e
 
 ### Hydrating the vector store
 
-If you have set the `ENABLE_RAG` parameter to `True` in the `constants.py` file, the following steps will demonstrate how to hydrate the **Amazon OpenSearch Service** vector database for RAG:
+The following steps will demonstrate how to hydrate the **Amazon OpenSearch Service** vector database for RAG:
 
 1. Use provided copy of [Treasure Island by Robert Louis Stevenson](assets/data/pg120.txt) to test vector store hydration and RAG.
 2. Using the AWS Console, navigate to Amazon S3 service, and select the bucket with the following format, `<WORKLOAD NAME>-prod-<REGION>-<ACCOUNT NUMBER>`. For example,  `aida-prod-us-west-2-123456789`.
