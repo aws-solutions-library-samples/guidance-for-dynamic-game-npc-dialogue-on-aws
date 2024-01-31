@@ -120,7 +120,7 @@ All features for this guidance are only available in the _US East (N. Virginia)_
         - ___Type:___ String
         - ___Example:___ `"us-east-1"`
     - `ENABLE_RAG`
-        - ___Description:___ Wether or not to leverage retrieval-augmented generation. Enabling this option will create an **Amazon OpenSearch Service** domain, and an additional API for NPC dialog generation. Set this parameter to `False` to disable using RAG`.
+        - ___Description:___ Wether or not to leverage retrieval-augmented generation. Enabling this option will create an **Amazon OpenSearch Service** domain, and an additional API for NPC dialog generation. Set this parameter to `False` to disable using RAG.
         - ___Type:___ Bool
         - ___Default:___ `True`
     - `SM_DOMAIN_ID`
