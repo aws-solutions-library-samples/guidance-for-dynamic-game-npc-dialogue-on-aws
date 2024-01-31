@@ -1,0 +1,36 @@
+*.swp
+package-lock.json
+__pycache__
+.pytest_cache
+.venv
+*.egg-info
+
+### vsCode ###
+.vscode
+
+### macOS ###
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+**/node_modules
+**/dist
+**/build
+**/.DS_Store
+**/.angular
+**/.idea
+**/data/**.csv
+.env
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out
+cdk.context.json

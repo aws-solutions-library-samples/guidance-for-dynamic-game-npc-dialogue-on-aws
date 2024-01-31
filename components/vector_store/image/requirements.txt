@@ -1,0 +1,5 @@
+boto3>=1.28.67
+langchain==0.1.4
+opensearch-py==2.2.0
+sagemaker
+tqdm
