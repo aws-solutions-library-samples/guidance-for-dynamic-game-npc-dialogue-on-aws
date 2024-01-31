@@ -156,13 +156,15 @@ To verify a successful deployment of this guidance, open [CloudFormation console
 
 ### Unreal Engine sample project
 
-An Unreal Engine sample project, `AmazonPollyMetaHuman`, has been provided in the `assets` folder. This sample [MetaHuman digital character](https://www.unrealengine.com/en-US/digital-humans) can be used to showcase dynamic NPC dialog. Follow the [README](assets/AmazonPollyMetaHuman/README.md) to get an overview of the sample project, and the prerequisites configured. Then use the following steps to integrate the sample MetaHuman with the deployed guidance infrastructure:
+An Unreal Engine sample project, [AmazonPollyMetaHuman](https://artifacts.kits.eventoutfitters.aws.dev/industries/games/AmazonPollyMetaHuman.zip), has been provided for download. This sample [MetaHuman digital character](https://www.unrealengine.com/en-US/digital-humans) can be used to showcase dynamic NPC dialog. Use the following steps to integrate the sample MetaHuman with the deployed guidance infrastructure:
 
-1. From the [CloudFormation console](https://console.aws.amazon.com/cloudformation/home) in your AWS, click the deployed infrastructure stack. Select the `Outputs` tab, and capture the values for `TextApiEndpointUrl` (and `RagApiEndpointUrl`, if the `ENABLE_RAG` parameter is set to `True` in the `constants.py` file).
-2. Launch Unreal Engine and open the sample project, by following the sample project [README](assets/AmazonPollyMetaHuman/README.md).
-3. Using the Unreal Editor, select `File` --> `Generate Visual Studio Code Project` to open the project for code editing.
-4. In VS Code, open the `/Source/AmazonPollyMetaHuman/Private/Private/SpeechComponent.cpp` file for editing.
-5. Navigate to the following code section, and replace the `ComboboxUri` variables with the `TextApiEndpointUrl` (and `RagApiEndpointUrl`, if the `ENABLE_RAG` parameter is set to `True` in the `constants.py` file) CloudFormation outputs.
+1. Download, and extract the [AmazonPollyMetaHuman](https://artifacts.kits.eventoutfitters.aws.dev/industries/games/AmazonPollyMetaHuman.zip) zipped Unreal Engine project.
+2. Follow the `README.md` file, to get an overview of the sample project, and the prerequisites configured.
+3. From the [CloudFormation console](https://console.aws.amazon.com/cloudformation/home) in your AWS, click the deployed infrastructure stack. Select the `Outputs` tab, and capture the values for `TextApiEndpointUrl` (and `RagApiEndpointUrl`, if the `ENABLE_RAG` parameter is set to `True` in the `constants.py` file).
+4. Launch Unreal Engine and open the sample project, by following the sample project [README](assets/AmazonPollyMetaHuman/README.md).
+5. Using the Unreal Editor, select `File` --> `Generate Visual Studio Code Project` to open the project for code editing.
+6. In VS Code, open the `/Source/AmazonPollyMetaHuman/Private/Private/SpeechComponent.cpp` file for editing.
+7. Navigate to the following code section, and replace the `ComboboxUri` variables with the `TextApiEndpointUrl` (and `RagApiEndpointUrl`, if the `ENABLE_RAG` parameter is set to `True` in the `constants.py` file) CloudFormation outputs.
     ```cpp
         void USpeechComponent::CallAPI(const FString Text, const FString Uri)
         {
@@ -179,9 +181,9 @@ An Unreal Engine sample project, `AmazonPollyMetaHuman`, has been provided in th
                 ComboBoxUri = "<ADD `RagApiEndpointUrl` VALUE FROM GUIDANCE DEPLOYMENT>";
             }
     ```
-6. Save the `SpeechComponent.cpp` file, and close VS Code.
-7. Using the Unreal Editor, click the `Compile` button to recompile the C++ code.
-8. Once the updated code has been compiled, click the `Launch` button to interact with the ___Ada___ NPC.
+8. Save the `SpeechComponent.cpp` file, and close VS Code.
+9. Using the Unreal Editor, click the `Compile` button to recompile the C++ code.
+10. Once the updated code has been compiled, click the `Launch` button to interact with the ___Ada___ NPC.
 
 ### Hydrating the vector store
 
