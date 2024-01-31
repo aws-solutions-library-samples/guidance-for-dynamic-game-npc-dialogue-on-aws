@@ -31,7 +31,7 @@ ___If you're looking for quick and easy step by step guide to get started, check
 
 ### Cost
 
-_You are responsible for the cost of the AWS services used while running this Guidance. As of January 2024, the cost for running this Guidance with the default settings in the `us-est-1` (N. Virginia) AWS Region is approximately $248.57 per month for processing 100 records._
+_You are responsible for the cost of the AWS services used while running this Guidance. As of January 2024, the cost for running this Guidance with the default settings in the `us-east-1` (N. Virginia) AWS Region is approximately $248.57 per month for processing 100 records._
 
 For example, the following table shows a break-down of approximate costs _(per month)_ to process 100 requests, using an **Amazon OpenSearch Service** vector database for RAG:
 
@@ -50,7 +50,7 @@ For example, the following table shows a break-down of approximate costs _(per m
 
 ### Operating System
 
-These deployment instructions are optimized to best work on a pre-configured **Amazon Linux 2023** [AWS Cloud9](https://aws.amazon.com/cloud9/) development environment. Refer to the [Individual user setup for AWS Cloud9](https://docs.aws.amazon.com/cloud9/latest/user-guide/setup-express.html) for more information on how to set up Cloud9 as a user in the AWS account. Deployment using another OS may require additional steps, and configured python libraries(see [Third-party tools](#third-party-tools)). 
+These deployment instructions are optimized to best work on a pre-configured **Amazon Linux 2023** [AWS Cloud9](https://aws.amazon.com/cloud9/) development environment. Refer to the [Individual user setup for AWS Cloud9](https://docs.aws.amazon.com/cloud9/latest/user-guide/setup-express.html) for more information on how to set up Cloud9 as a user in the AWS account. Deployment using another OS may require additional steps, and configured python libraries (see [Third-party tools](#third-party-tools)). 
 
 >__NOTE:__ A Github [dev container](https://docs.github.com/en/codespaces/setting-up-your-project-for-codespaces/adding-a-dev-container-configuration/introduction-to-dev-containers) configuration has been provided should you wish to use [GitHub codespaces](https://docs.github.com/en/codespaces), or [Visual Studio Code Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers) as your development environment.
 
@@ -89,7 +89,6 @@ This Guidance uses AWS CDK. If you are using `aws-cdk` for first time, please se
 All features for this guidance are only available in the _US East (N. Virginia)_ and _US West (Oregon)_ AWS regions.
 
 ## Deployment Steps
-
 
 1. In the Cloud9 IDE, use the terminal to clone the repository:
     ```bash
@@ -162,9 +161,10 @@ An Unreal Engine sample project, [AmazonPollyMetaHuman](https://artifacts.kits.e
 2. Follow the `README.md` file, to get an overview of the sample project, and the prerequisites configured.
 3. From the [CloudFormation console](https://console.aws.amazon.com/cloudformation/home) in your AWS, click the deployed infrastructure stack. Select the `Outputs` tab, and capture the values for `TextApiEndpointUrl` (and `RagApiEndpointUrl`, if the `ENABLE_RAG` parameter is set to `True` in the `constants.py` file).
 4. Launch Unreal Engine and open the sample project, by following the sample project [README](assets/AmazonPollyMetaHuman/README.md).
-5. Using the Unreal Editor, select `File` --> `Generate Visual Studio Code Project` to open the project for code editing.
-6. In VS Code, open the `/Source/AmazonPollyMetaHuman/Private/Private/SpeechComponent.cpp` file for editing.
-7. Navigate to the following code section, and replace the `ComboboxUri` variables with the `TextApiEndpointUrl` (and `RagApiEndpointUrl`, if the `ENABLE_RAG` parameter is set to `True` in the `constants.py` file) CloudFormation outputs.
+5. Using the Unreal Editor, select `File` --> `Generate Visual Studio Code Project` to use VS Code for editing source code.
+6. Using the Unreal Editor, select `File` --> `Open Visual Studio Code` to open the project for code editing.
+7. In VS Code, open the `/Source/AmazonPollyMetaHuman/Private/Private/SpeechComponent.cpp` file for editing.
+8. Navigate to the following code section, and replace the `ComboboxUri` variables with the `TextApiEndpointUrl` (and `RagApiEndpointUrl`, if the `ENABLE_RAG` parameter is set to `True` in the `constants.py` file) CloudFormation outputs.
     ```cpp
         void USpeechComponent::CallAPI(const FString Text, const FString Uri)
         {
@@ -181,16 +181,15 @@ An Unreal Engine sample project, [AmazonPollyMetaHuman](https://artifacts.kits.e
                 ComboBoxUri = "<ADD `RagApiEndpointUrl` VALUE FROM GUIDANCE DEPLOYMENT>";
             }
     ```
-8. Save the `SpeechComponent.cpp` file, and close VS Code.
-9. Using the Unreal Editor, click the `Compile` button to recompile the C++ code.
-10. Once the updated code has been compiled, click the `Launch` button to interact with the ___Ada___ NPC.
+9. Save the `SpeechComponent.cpp` file, and close VS Code.
+10. Using the Unreal Editor, click the `Compile` button to recompile the C++ code.
+11. Once the updated code has been compiled, click the `Launch` button to interact with the ___Ada___ NPC.
 
 ### Hydrating the vector store
 
-If you have set the `ENABLE_RAG` parameter is set to `True` in the `constants.py` file, the following steps to hydrate the **Amazon OpenSearch Service** vector database for RAG:
+If you have set the `ENABLE_RAG` parameter to `True` in the `constants.py` file, the following steps will demonstrate how to hydrate the **Amazon OpenSearch Service** vector database for RAG:
 
 1. Use provided copy of [Treasure Island by Robert Louis Stevenson](assets/data/pg120.txt).
-    >__NOTE:__ This file is available for reuse under the terms of the Project Gutenberg License, included with the ebook or online at www.gutenberg.org.
 2. Using the AWS Console, navigate to Amazon S3 service, and select the bucket with the following format, `<WORKLOAD NAME>-prod-<REGION>-<ACCOUNT NUMBER>`. For example,  `aida-prod-us-west-2-123456789`.
 3. Upload the Treasure Island File, by clicking on the upload button, and selecting the file `pg120.txt` file. This will trigger the **AWS Lambda** function that starts a an **Amazon SageMaker Processing Job** to hydrate the **Amazon OpenSearch Service** database.
 3. Using the AWS console, search for, and click on the **Amazon SageMaker** service to open the service console. Using the navigation panel on the left-hand side, expand the `Processing` option, and then select `Processing jobs`. You'll see a processing job has been started, for example `Ada-RAG-Ingest-01-21-20-13-20`. This jobs executes the process of chunking the ebook data, converting it to embeddings, and hydrating the database. 
@@ -199,6 +198,8 @@ If you have set the `ENABLE_RAG` parameter is set to `True` in the `constants.py
 <p align="center">
     <img src="assets/images/sagemaker_job_log.png" alt="SageMaker Log" style="width: 33em;" />
 </p>
+
+>__NOTE:__ The [Treasure Island by Robert Louis Stevenson](assets/data/pg120.txt) is available for reuse under the terms of the Project Gutenberg License, included with the ebook or online at www.gutenberg.org.
 
 ## Cleanup
 
@@ -230,17 +231,14 @@ Once the deployed infrastructure has been validated, or to further optimize the 
     ```bash
     cdk deploy --require-approval never
     ```
-5. Initialize the pipeline source, excluding the Unreal Engine project:
+5. Initialize the `main` branch:
     ```bash
-    rm -rf .git
-
-    echo "assets/AmazonPollyMetaHuman" >> .gitignore
-
+    rm -rf .git && \
     git init --initial-branch=main
     ```
-6. Add the newly **AWS CodeCommit** repository as the upstream origin:
+6. Add the newly **AWS CodeCommit** repository as the upstream origin, substituting the appropriate `WORKLOAD_NAME`, and `REGION` parameters:
     ```bash
-    git remote add origin https://git-codecommit.<AWS REGION>.amazonaws.com/v1/repos/<WORKLOAD NAME>
+    git remote add origin https://git-codecommit.<REGION>.amazonaws.com/v1/repos/<WORKLOAD_NAME>
     ```
 7. Add the source code to to trigger a CI/CD/CT pipeline execution.
     ```bash
