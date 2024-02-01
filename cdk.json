@@ -60,7 +60,7 @@
     "@aws-cdk/aws-codepipeline-actions:useNewDefaultBranchForCodeCommitSource": true,
     "@aws-cdk/aws-cloudwatch-actions:changeLambdaPermissionLogicalIdForLambdaAction": true,
     "toolchain-context": {
-      "cdk-version": "2.124.0",
+      "cdk-version": "2.125.0",
       "bedrock-text-model-id": "anthropic.claude-v2",
       "bedrock-embedding-model-id": "amazon.titan-embed-text-v1",
       "embedding-index-name": "rag_embeddings",

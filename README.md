@@ -23,8 +23,6 @@
 
 Typical player interactions with NPCs are static, and require large teams of script writers to create static dialog content for each character, in each game, and each game version to ensure consistency with game lore. This Guidance helps game developers automate the process of creating a non-player character (NPC) for their games and associated infrastructure. It uses Unreal Engine MetaHuman, along with foundation models (FMs), for instance the large language models (LLMs) Claude 2, and Llama 2, to improve NPC conversational skills. This leads to dynamic responses from the NPC that are unique to each player, adding to scripted dialogue. By using the Large Language Model Ops (LLMOps) methodology, this Guidance accelerates prototyping, and delivery time by continually integrating, and deploying the generative AI application, along with fine-tuning the LLMs. All while helping to ensure that the NPC has full access to a secure knowledge base of game lore, using retrieval-augmented generation (RAG).
 
-___If you're looking for quick and easy step by step guide to get started, check out the Workshop -  [Operationalize Generative AI Applications using LLMOps](https://catalog.us-east-1.prod.workshops.aws/workshops/90992473-01e8-42d6-834f-9baf866a9057/en-US).___
-
 ### Architecture
 
 ![Architecture](assets/images/architecture.png)
@@ -58,11 +56,11 @@ These deployment instructions are optimized to best work on a pre-configured **A
 
 Before deploying the guidance code, ensure that the following required tools have been installed:
 
-- AWS Cloud Development Kit (CDK) >= 2.124.0
+- AWS Cloud Development Kit (CDK) >= 2.125.0
 - Python >= 3.8
 - NodeJS >= 18
 
->__NOTE:__ The Guidance has been tested using AWS CDK version 2.124. If you wish to update the CDK application to later version, make sure to update the `requirements.txt`, and `cdk.json` files, in the root of the repository, with the updated version of the AWS CDK.
+>__NOTE:__ The Guidance has been tested using AWS CDK version 2.125.0. If you wish to update the CDK application to later version, make sure to update the `requirements.txt`, and `cdk.json` files, in the root of the repository, with the updated version of the AWS CDK.
 
 ### AWS account requirements
 
@@ -119,10 +117,6 @@ All features for this guidance are only available in the _US East (N. Virginia)_
         - ___Description:___ The name of the AWS region into which you want to deploy the use case.
         - ___Type:___ String
         - ___Example:___ `"us-east-1"`
-    - `ENABLE_RAG`
-        - ___Description:___ Wether or not to leverage retrieval-augmented generation. Enabling this option will create an **Amazon OpenSearch Service** domain, and an additional API for NPC dialog generation. Set this parameter to `False` to disable using RAG.
-        - ___Type:___ Bool
-        - ___Default:___ `True`
     - `SM_DOMAIN_ID`
         - ___Description:___ The ID for your prerequisite __Amazon SageMaker Domain__ in your configured AWS region. You can view the ID for your domain in the [AWS Console](https://console.aws.amazon.com/sagemaker/), or by running the ```aws sagemaker list-domains --query "Domains[*].DomainId" --output text``` command.
         - ___Type:___ String
@@ -146,12 +140,47 @@ All features for this guidance are only available in the _US East (N. Virginia)_
     ```bash
     cdk deploy --require-approval never
     ```
+10. Once the LLMOps pipeline has been deployed, use the Cloud9 IDE, to initialize the `main` branch:
+    ```bash
+    rm -rf .git && \
+    git init --initial-branch=main
+    ```
+6. Add the newly **AWS CodeCommit** repository as the upstream origin, substituting the appropriate `WORKLOAD_NAME`, and `REGION` parameters:
+    ```bash
+    git remote add origin https://git-codecommit.<REGION>.amazonaws.com/v1/repos/<WORKLOAD_NAME>
+    ```
+7. Add the source code to to trigger a CI/CD/CT pipeline execution.
+    ```bash
+    git add -A
+    
+    git commit -m "Initial commit"
+    
+    git push --set-upstream origin main
+    ```
+
+Make any code changes to subsequently optimize the guidance for your use case. Committing these changes will trigger a subsequent continuous integration, and deployment of the deployed production stack.
 
 ## Deployment Validation
 
 To verify a successful deployment of this guidance, open [CloudFormation console](https://console.aws.amazon.com/cloudformation/home), and verify the status of the stack infrastructure stack is `CREATE_COMPLETE`. For example, if your `WORKLOAD_NAME` parameter is `Ada`, CloudFormation will reflect that the `Ada-DEV` stack has a `CREATE_COMPLETE` status.
 
 ## Running the Guidance
+
+### Hydrating the vector store
+
+The following steps will demonstrate how to hydrate the **Amazon OpenSearch Service** vector database for RAG:
+
+1. Use provided copy of [Treasure Island by Robert Louis Stevenson](assets/data/pg120.txt) to test vector store hydration and RAG.
+2. Using the AWS Console, navigate to Amazon S3 service, and select the bucket with the following format, `<WORKLOAD NAME>-prod-<REGION>-<ACCOUNT NUMBER>`. For example,  `aida-prod-us-west-2-123456789`.
+3. Upload the Treasure Island File, by clicking on the upload button, and selecting the file `pg120.txt` file. This will trigger the **AWS Lambda** function that starts a an **Amazon SageMaker Processing Job** to hydrate the **Amazon OpenSearch Service** database.
+3. Using the AWS console, search for, and click on the **Amazon SageMaker** service to open the service console. Using the navigation panel on the left-hand side, expand the `Processing` option, and then select `Processing jobs`. You'll see a processing job has been started, for example `Ada-RAG-Ingest-01-21-20-13-20`. This jobs executes the process of chunking the ebook data, converting it to embeddings, and hydrating the database. 
+4. Clink on the running processing job to view its configuration. Under the `Monitoring`, click the `View logs` link to see see the processing logs for your job in **Amazon CloudWatch**. After roughly 5 minutes, the log stream becomes available, and after clicking on the log stream, you will see that each line of the log output represents the successful processing of a chunk of the text inserted into the vector store. For example:
+
+<p align="center">
+    <img src="assets/images/sagemaker_job_log.png" alt="SageMaker Log" style="width: 33em;" />
+</p>
+
+>__NOTE:__ The [Treasure Island by Robert Louis Stevenson](assets/data/pg120.txt) is available for reuse under the terms of the Project Gutenberg License, included with the ebook or online at www.gutenberg.org.
 
 ### Unreal Engine sample project
 
@@ -185,22 +214,6 @@ An Unreal Engine sample project, [AmazonPollyMetaHuman](https://artifacts.kits.e
 10. Using the Unreal Editor, click the `Compile` button to recompile the C++ code.
 11. Once the updated code has been compiled, click the `Launch` button to interact with the ___Ada___ NPC.
 
-### Hydrating the vector store
-
-The following steps will demonstrate how to hydrate the **Amazon OpenSearch Service** vector database for RAG:
-
-1. Use provided copy of [Treasure Island by Robert Louis Stevenson](assets/data/pg120.txt) to test vector store hydration and RAG.
-2. Using the AWS Console, navigate to Amazon S3 service, and select the bucket with the following format, `<WORKLOAD NAME>-prod-<REGION>-<ACCOUNT NUMBER>`. For example,  `aida-prod-us-west-2-123456789`.
-3. Upload the Treasure Island File, by clicking on the upload button, and selecting the file `pg120.txt` file. This will trigger the **AWS Lambda** function that starts a an **Amazon SageMaker Processing Job** to hydrate the **Amazon OpenSearch Service** database.
-3. Using the AWS console, search for, and click on the **Amazon SageMaker** service to open the service console. Using the navigation panel on the left-hand side, expand the `Processing` option, and then select `Processing jobs`. You'll see a processing job has been started, for example `Ada-RAG-Ingest-01-21-20-13-20`. This jobs executes the process of chunking the ebook data, converting it to embeddings, and hydrating the database. 
-4. Clink on the running processing job to view its configuration. Under the `Monitoring`, click the `View logs` link to see see the processing logs for your job in **Amazon CloudWatch**. After roughly 5 minutes, the log stream becomes available, and after clicking on the log stream, you will see that each line of the log output represents the successful processing of a chunk of the text inserted into the vector store. For example:
-
-<p align="center">
-    <img src="assets/images/sagemaker_job_log.png" alt="SageMaker Log" style="width: 33em;" />
-</p>
-
->__NOTE:__ The [Treasure Island by Robert Louis Stevenson](assets/data/pg120.txt) is available for reuse under the terms of the Project Gutenberg License, included with the ebook or online at www.gutenberg.org.
-
 ## Cleanup
 
 To delete the deployed resources, use the AWS CDK CLI to run the following steps:
@@ -219,36 +232,4 @@ To delete the deployed resources, use the AWS CDK CLI to run the following steps
 
 ## Next Steps
 
-Once the deployed infrastructure has been validated, or to further optimize the use case, you can implement the infrastructure as part of an LLMOps pipeline, using the following steps:
-
-1. Using the Cloud9 IDE, open the `app.py` file and comment out the `InfrastructureStack()` section.
-2. Now, uncomment `ToolChainStack()` section, and save the `app.py` file.
-3. Ensure that you are working the correct folder structure:
-    ```bash
-    cd ~/environment/dynamic-npc
-    ```
-4. Deploy the toolchain stack with the following command:
-    ```bash
-    cdk deploy --require-approval never
-    ```
-5. Initialize the `main` branch:
-    ```bash
-    rm -rf .git && \
-    git init --initial-branch=main
-    ```
-6. Add the newly **AWS CodeCommit** repository as the upstream origin, substituting the appropriate `WORKLOAD_NAME`, and `REGION` parameters:
-    ```bash
-    git remote add origin https://git-codecommit.<REGION>.amazonaws.com/v1/repos/<WORKLOAD_NAME>
-    ```
-7. Add the source code to to trigger a CI/CD/CT pipeline execution.
-    ```bash
-    git add -A
-    
-    git commit -m "Initial commit"
-    
-    git push --set-upstream origin main
-    ```
-
-Make any code changes to subsequently optimize the guidance for your use case. Committing these changes will trigger a subsequent continuous integration, and deployment of the deployed production stack.
-
->__NOTE:__ Review the [Continuous Tuning using FMOps](https://catalog.us-east-1.prod.workshops.aws/workshops/90992473-01e8-42d6-834f-9baf866a9057/en-US/5-continuous-tuning) section of the **Operationalize Generative AI Applications using LLMOps** workshop for a step-by-step guide to implementing continuous fine-tuning of a foundation model for the use case.
+Review the [Continuous Tuning using FMOps](https://catalog.us-east-1.prod.workshops.aws/workshops/90992473-01e8-42d6-834f-9baf866a9057/en-US/5-continuous-tuning) section of the **Operationalize Generative AI Applications using LLMOps** workshop for a step-by-step guide to implementing continuous fine-tuning of a foundation model for the use case.
