@@ -44,7 +44,7 @@ For example, the following table shows a break-down of approximate costs _(per m
 | CodeBuild          | $0.34                |
 | Secrets Manager    | $0.20                |
 | Bedrock            | $1.30                |
-|      **Total**     | **590.59**           |
+|      **Total**     | **$590.59**           |
 
 
 ## Prerequisites
