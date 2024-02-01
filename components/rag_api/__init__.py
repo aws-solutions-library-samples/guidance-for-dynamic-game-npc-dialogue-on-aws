@@ -45,7 +45,7 @@ class RagApi(Construct):
         # Create Lambda Functions for the text2text API
         self.rag_handler = _lambda.Function(
             self,
-            "TextHandler",
+            "RagHandler",
             code=_lambda.Code.from_asset(
                 path="components/rag_api/runtime",
                 bundling=cdk.BundlingOptions(
