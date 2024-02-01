@@ -19,9 +19,10 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"ms-python.pylint"
+				"ms-python.pylint",
+				"streetsidesoftware.code-spell-checker"
 			]
 		}
 	},
-	"postCreateCommand": "python -m pip install --upgrade pip && pip install --user -r requirements.txt"
+	"postCreateCommand": "python -m pip install --upgrade pip && pip install --user -r requirements.txt && pip install git-remote-codecommit"
 }

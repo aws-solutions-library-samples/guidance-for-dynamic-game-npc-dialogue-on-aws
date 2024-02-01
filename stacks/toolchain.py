@@ -95,22 +95,22 @@ class ToolChainStack(cdk.Stack):
         )
 
         # Add Production Stage
-        # ToolChainStack._add_stage(
-        #     pipeline=pipeline,
-        #     stage_name=constants.PROD_ENV_NAME,
-        #     stage_account=self.account,
-        #     stage_region=self.region,
-        #     model_parameter_name="CustomModelName"
-        # )
+        ToolChainStack._add_stage(
+            pipeline=pipeline,
+            stage_name=constants.PROD_ENV_NAME,
+            stage_account=self.account,
+            stage_region=self.region,
+            model_parameter_name="CustomModelName"
+        )
 
         # Add tuning stack as CT stage
-        # ToolChainStack._add_stage(
-        #     pipeline=pipeline,
-        #     stage_name="TUNING",
-        #     stage_account=self.account,
-        #     stage_region=self.region,
-        #     model_parameter_name="CustomModelName"
-        # )
+        ToolChainStack._add_stage(
+            pipeline=pipeline,
+            stage_name="TUNING",
+            stage_account=self.account,
+            stage_region=self.region,
+            model_parameter_name="CustomModelName"
+        )
 
     @staticmethod
     def _add_stage(pipeline: _pipelines.CodePipeline, stage_name: str, stage_account: str, stage_region: str, model_parameter_name: str=None) -> None:

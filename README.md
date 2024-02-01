@@ -24,6 +24,8 @@
 
 Typical player interactions with NPCs are static, and require large teams of script writers to create static dialog content for each character, in each game, and each game version to ensure consistency with game lore. This Guidance helps game developers automate the process of creating a non-player character (NPC) for their games and associated infrastructure. It uses Unreal Engine MetaHuman, along with foundation models (FMs), for instance the large language models (LLMs) Claude 2, and Llama 2, to improve NPC conversational skills. This leads to dynamic responses from the NPC that are unique to each player, adding to scripted dialogue. By using the Large Language Model Ops (LLMOps) methodology, this Guidance accelerates prototyping, and delivery time by continually integrating, and deploying the generative AI application, along with fine-tuning the LLMs. All while helping to ensure that the NPC has full access to a secure knowledge base of game lore, using retrieval-augmented generation (RAG).
 
+___If you're looking for quick and easy step by step guide to get started, check out the Workshop -  [Operationalize Generative AI Applications using LLMOps](https://catalog.us-east-1.prod.workshops.aws/workshops/90992473-01e8-42d6-834f-9baf866a9057/en-US).___
+
 ### Architecture
 
 ![Architecture](assets/images/architecture.png)
@@ -36,13 +38,13 @@ For example, the following table shows a break-down of approximate costs _(per m
 
 |     **Service**    | **Cost (per month)** |
 |:------------------:|:--------------------:|
-| OpenSearch Service | $243.65              |
+| OpenSearch Service | $586.65              |
 | SageMaker          | $1.43                |
-| S3                 | $1.67                |
+| S3                 | $0.67                |
 | CodeBuild          | $0.34                |
-| Secrets Manager    | $1.20                |
-| Bedrock            | $0.30                |
-|      **Total**     | **248.57**           |
+| Secrets Manager    | $0.20                |
+| Bedrock            | $1.30                |
+|      **Total**     | **590.59**           |
 
 
 ## Prerequisites
@@ -64,7 +66,7 @@ Before deploying the guidance code, ensure that the following required tools hav
 >__NOTE:__ The Guidance has been tested using AWS CDK version 2.125.0. If you wish to update the CDK application to later version, make sure to update the `requirements.txt`, and `cdk.json` files, in the root of the repository, with the updated version of the AWS CDK.
 
 - Unreal Engine 4.26 or 4.27
-- Microsdoft Visual Studio Code for Unreal Engine 4 C++ development.
+- Microsoft Visual Studio Code for Unreal Engine 4 C++ development.
 
 >__NOTE:__ If you need help with these setup steps, refer to the Unreal Engine 4 documentation, especially "Setting Up Visual Studio for Unreal Engine". The  was only tested with Visual Studio 2019 with Unreal Engine 4.27. The Unreal Engine sample __DOES NOT__ work with Ureal Engine 5.
 
@@ -179,7 +181,7 @@ Once the deployment has been validated, you can deploy the infrastructure into t
     <img src="assets/images/qa_stage.png" alt="QA Stage" style="width: 53em;" />
 </p>
 
-Once the `QA` stage of the pipeline has been deplyed, and the `SystemTest` stage action is successful, idicating the backend infrastrcuture is functionaing, you can hydrate the vector store.
+Once the `QA` stage of the pipeline is complete, and the `SystemTest` stage action is successful, indicating the backend infrastructure is deployed, you can hydrate the vector store.
 
 ### Hydrating the vector store
 
@@ -201,14 +203,15 @@ The following steps will demonstrate how to hydrate the **Amazon OpenSearch Serv
 
 An Unreal Engine sample project, [AmazonPollyMetaHuman](https://artifacts.kits.eventoutfitters.aws.dev/industries/games/AmazonPollyMetaHuman.zip), has been provided for download. This sample [MetaHuman digital character](https://www.unrealengine.com/en-US/digital-humans) can be used to showcase dynamic NPC dialog. Use the following steps to integrate the sample MetaHuman with the deployed guidance infrastructure:
 
-1. Download, and extract the [AmazonPollyMetaHuman](https://artifacts.kits.eventoutfitters.aws.dev/industries/games/AmazonPollyMetaHuman.zip) zipped Unreal Engine project.
-2. Follow the `README.md` file, to get an overview of the sample project, and the prerequisites configured.
-3. From the [CloudFormation console](https://console.aws.amazon.com/cloudformation/home) in your AWS, click the deployed infrastructure stack. Select the `Outputs` tab, and capture the values for `TextApiEndpointUrl`, and `RagApiEndpointUrl`.
-4. Launch Unreal Engine and open the sample project, by following the sample project [README](assets/AmazonPollyMetaHuman/README.md).
-5. Using the Unreal Editor, select `File` --> `Generate Visual Studio Code Project` to use VS Code for editing source code.
-6. Using the Unreal Editor, select `File` --> `Open Visual Studio Code` to open the project for code editing.
-7. In VS Code, open the `/Source/AmazonPollyMetaHuman/Private/Private/SpeechComponent.cpp` file for editing.
-8. Navigate to the following code section, and replace the `ComboboxUri` variables with the `TextApiEndpointUrl`, and `RagApiEndpointUrl` CloudFormation outputs.
+1. From the [CloudFormation console](https://console.aws.amazon.com/cloudformation/home) in your AWS, click the deployed `QA` stack. For example, if your `WORKLOAD_NAME` parameter is `Ada`, CloudFormation will reflect that `Ada-QA` as the deployed `QA` stack.
+2. Select the `Outputs` tab, and capture the values for `TextApiEndpointUrl`, and `RagApiEndpointUrl`.
+3. Download, the [AmazonPollyMetaHuman](https://artifacts.kits.eventoutfitters.aws.dev/industries/games/AmazonPollyMetaHuman.zip) zipped Unreal Engine project.
+4. Extract the `AmazonPollyMetaHuman` project folder to the `Unreal Projects` folder of the Unreal Engine development environment.
+5. Launch Unreal Engine 4.27, and open the `AmazonPollyMetaHuman` sample project.
+6. Using the Unreal Editor, select `File` --> `Generate Visual Studio Code Project` to use VS Code for editing source code.
+7. Using the Unreal Editor, select `File` --> `Open Visual Studio Code` to open the project for code editing.
+8. In VS Code, open the `/Source/AmazonPollyMetaHuman/Private/Private/SpeechComponent.cpp` file for editing.
+9. Navigate to the following code section, and replace the `ComboboxUri` variables with the `TextApiEndpointUrl`, and `RagApiEndpointUrl` CloudFormation outputs.
     ```cpp
         void USpeechComponent::CallAPI(const FString Text, const FString Uri)
         {
@@ -225,13 +228,47 @@ An Unreal Engine sample project, [AmazonPollyMetaHuman](https://artifacts.kits.e
                 ComboBoxUri = "<ADD `RagApiEndpointUrl` VALUE FROM GUIDANCE DEPLOYMENT>";
             }
     ```
-9. Save the `SpeechComponent.cpp` file, and close VS Code.
-10. Using the Unreal Editor, click the `Compile` button to recompile the C++ code.
-11. Once the updated code has been compiled, click the `Launch` button to interact with the ___Ada___ NPC.
+10. Save the `SpeechComponent.cpp` file, and close VS Code.
+11. Using the Unreal Editor, click the `Compile` button to recompile the C++ code.
+12. Once the updated code has been compiled, click the `Play` button to interact with the ___Ada___ NPC.
 
 ## Next Steps
 
-Review the [Continuous Tuning using FMOps](https://catalog.us-east-1.prod.workshops.aws/workshops/90992473-01e8-42d6-834f-9baf866a9057/en-US/5-continuous-tuning) section of the **Operationalize Generative AI Applications using LLMOps** workshop for a step-by-step guide to implementing continuous fine-tuning of a custom foundation model for the use case.
+Once the sample application has been validated using the `QA` deployment, you can deploy the infrastructure into production, as part of an LLMOps pipeline, using the following steps:
+
+1. Using the Cloud9 IDE, open the `stacks/toolchain.py` file for editing.
+2. Uncomment the following code to enable the `PROD`, and `TUNING` stages of the LLMOps pipeline:
+    ```python
+    # Add Production Stage
+    ToolChainStack._add_stage(
+        pipeline=pipeline,
+        stage_name=constants.PROD_ENV_NAME,
+        stage_account=self.account,
+        stage_region=self.region,
+        model_parameter_name="CustomModelName"
+    )
+
+    # Add tuning stack as CT stage
+    ToolChainStack._add_stage(
+        pipeline=pipeline,
+        stage_name="TUNING",
+        stage_account=self.account,
+        stage_region=self.region,
+        model_parameter_name="CustomModelName"
+    )
+    ```
+3. Save the `toolchain.py` file.
+4. Commit the updates to the source repository using the following commands:
+    ```bash
+    git add -A
+
+    git commit -m "Enabled PROD and TUNING stages"
+
+    git push
+    ```
+5. Open the [CodePipeline](https://console.aws.amazon.com/codesuite/codepipeline/pipelines) console, and click on the LLMOps pipeline for the workload. For example, if your `WORKLOAD_NAME` parameter is `Ada`, CodePipeline will reflect that the `Ada-Pipeline`  is `In progress`.
+
+>__NOTE:__ Review the [Continuous Tuning using FMOps](https://catalog.us-east-1.prod.workshops.aws/workshops/90992473-01e8-42d6-834f-9baf866a9057/en-US/5-continuous-tuning) section of the **Operationalize Generative AI Applications using LLMOps** workshop for a step-by-step guide to implementing continuous fine-tuning of a custom foundation model for the use case.
 
 ## Cleanup
 
@@ -249,6 +286,6 @@ To delete the deployed resources, use the AWS CDK CLI to run the following steps
 4. Use the [CloudFormation](https://console.aws.amazon.com/cloudformation/home) console to manually delete the following stacks in order. For example, if your `WORKLOAD_NAME` parameter is `Ada`, CloudFormation will reflect that the `QA` stack is `Ada-QA`.
     - <WORKLOAD_NAME>-Tuning
     - <WORKLOAD_NAME>-PROD
-    - <WORKLOAD_NAME>QA
+    - <WORKLOAD_NAME>-QA
 
 >__NOTE:__ Deleting the deployed resources will not delete the __Amazon S3__ bucket, in order to protect any training data already stored. See the [Deleting a bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/delete-bucket.html) section of the __Amazon Simple Storage Service__ user guide for the various ways to delete the S3 bucket.
