@@ -42,59 +42,47 @@ class InfrastructureStack(cdk.Stack):
             value=text_api.text_apigw.url
         )
 
-        # Create RAG tuning resources, if enabled as a solution constant
-        if constants.ENABLE_RAG:
-            # Define the S3 Bucket for RAG data
-            # NOTE: An S3 bucket will be created for both the `QA` and `PROD` stages
-            rag_bucket = _s3.Bucket(
-                self,
-                "RagDataBucket",
-                bucket_name=f"{self.stack_name.lower()}-{cdk.Aws.REGION}-{cdk.Aws.ACCOUNT_ID}",
-                removal_policy=cdk.RemovalPolicy.DESTROY,
-                auto_delete_objects=True,
-                versioned=True
-            )
+        # Define the S3 Bucket for RAG data
+        # NOTE: An S3 bucket will be created for both the `QA` and `PROD` stages
+        rag_bucket = _s3.Bucket(
+            self,
+            "RagDataBucket",
+            bucket_name=f"{self.stack_name.lower()}-{cdk.Aws.REGION}-{cdk.Aws.ACCOUNT_ID}",
+            removal_policy=cdk.RemovalPolicy.DESTROY,
+            auto_delete_objects=True,
+            versioned=True
+        )
 
-            # Define the Bedrock Text API for RAG
-            rag_api = RagApi(self, "RagAPI")
-            rag_api.rag_handler.add_environment(key="TEXT_MODEL_ID", value=context.get("bedrock-text-model-id"))
-            rag_api.rag_handler.add_environment(key="EMBEDDING_MODEL_ID", value=context.get("bedrock-embedding-model-id"))
+        # Define the Bedrock Text API for RAG
+        rag_api = RagApi(self, "RagAPI")
+        rag_api.rag_handler.add_environment(key="TEXT_MODEL_ID", value=context.get("bedrock-text-model-id"))
+        rag_api.rag_handler.add_environment(key="EMBEDDING_MODEL_ID", value=context.get("bedrock-embedding-model-id"))
 
-            # Expose RAG API endpoint for cross-stack, and external app reference
-            _ssm.StringParameter(
-                self,
-                "RagEndpointParameter",
-                parameter_name=f"{self.stack_name}-RagEndpointParameter",
-                string_value=rag_api.rag_apigw.url
-            )
+        # Expose RAG API endpoint for cross-stack, and external app reference
+        _ssm.StringParameter(
+            self,
+            "RagEndpointParameter",
+            parameter_name=f"{self.stack_name}-RagEndpointParameter",
+            string_value=rag_api.rag_apigw.url
+        )
 
-            # Add the OpenSearch Vector Store
-            vector_store = VectorStore(self, "VectorStore", data_bucket=rag_bucket)
+        # Add the OpenSearch Vector Store
+        vector_store = VectorStore(self, "VectorStore", data_bucket=rag_bucket)
 
-            # Apply Vector Store integration with RAG API
-            rag_api.rag_handler.add_environment(key="OPENSEARCH_INDEX", value=context.get("embedding-index-name"))
-            rag_api.rag_handler.add_environment(key="OPENSEARCH_ENDPOINT", value=vector_store.endpoint_name)
-            rag_api.rag_handler.add_environment(key="OPENSEARCH_SECRET", value=vector_store.opensearch_secret.secret_name)
+        # Apply Vector Store integration with RAG API
+        rag_api.rag_handler.add_environment(key="OPENSEARCH_INDEX", value=context.get("embedding-index-name"))
+        rag_api.rag_handler.add_environment(key="OPENSEARCH_ENDPOINT", value=vector_store.endpoint_name)
+        rag_api.rag_handler.add_environment(key="OPENSEARCH_SECRET", value=vector_store.opensearch_secret.secret_name)
 
-            # Give the TEXT API handler access to the OpenSearch master use secret, for authentication
-            vector_store.opensearch_secret.grant_read(rag_api.rag_handler)
+        # Give the TEXT API handler access to the OpenSearch master use secret, for authentication
+        vector_store.opensearch_secret.grant_read(rag_api.rag_handler)
 
-            # Expose the RAG API Endpoint for system testing
-            self.rag_apigw_output = cdk.CfnOutput(
-                self,
-                "RagApiEndpointUrl",
-                value=rag_api.rag_apigw.url
-            )
-
-        else:
-            # Expose `NULL` value RAG API Endpoint for system testing environment variable
-            # NOTE: This ensure that the System Test environment variables don't break the stage synth for `QA`
-            #       in `toolchain.py`
-            self.rag_apigw_output = cdk.CfnOutput(
-                self,
-                "RagApiEndpointUrl",
-                value="NULL"
-            )
+        # Expose the RAG API Endpoint for system testing
+        self.rag_apigw_output = cdk.CfnOutput(
+            self,
+            "RagApiEndpointUrl",
+            value=rag_api.rag_apigw.url
+        )
 
 
     @staticmethod

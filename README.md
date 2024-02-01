@@ -14,10 +14,11 @@
 3. [Deployment Steps](#deployment-steps)
 4. [Deployment Validation](#deployment-validation)
 5. [Running the Guidance](#running-the-guidance)
-    - [Unreal Engine sample project](#unreal-engine-sample-project)
+    - [Quality Assurance](#quality-assurance)
     - [Hydrating the vector store](#hydrating-the-vector-store)
-6. [Cleanup](#cleanup)
-7. [Next Steps](#next-steps)
+    - [Unreal Engine sample project](#unreal-engine-sample-project)
+6. [Next Steps](#next-steps)
+7. [Cleanup](#cleanup)
 
 ## Overview
 
@@ -61,6 +62,11 @@ Before deploying the guidance code, ensure that the following required tools hav
 - NodeJS >= 18
 
 >__NOTE:__ The Guidance has been tested using AWS CDK version 2.125.0. If you wish to update the CDK application to later version, make sure to update the `requirements.txt`, and `cdk.json` files, in the root of the repository, with the updated version of the AWS CDK.
+
+- Unreal Engine 4.26 or 4.27
+- Microsdoft Visual Studio Code for Unreal Engine 4 C++ development.
+
+>__NOTE:__ If you need help with these setup steps, refer to the Unreal Engine 4 documentation, especially "Setting Up Visual Studio for Unreal Engine". The  was only tested with Visual Studio 2019 with Unreal Engine 4.27. The Unreal Engine sample __DOES NOT__ work with Ureal Engine 5.
 
 ### AWS account requirements
 
@@ -129,9 +135,7 @@ All features for this guidance are only available in the _US East (N. Virginia)_
         - ___Description:___ The name of the "Production" stage of the LLMOps pipeline.
         - ___Type:___ String
         - ___Default:___ `"PROD"`
-
 7. Save the `constants.py` file after updating your use case settings.
-
 8. Verify that the CDK deployment correctly synthesizes the CloudFormation template:
     ```bash
     cdk synth
@@ -140,16 +144,28 @@ All features for this guidance are only available in the _US East (N. Virginia)_
     ```bash
     cdk deploy --require-approval never
     ```
-10. Once the LLMOps pipeline has been deployed, use the Cloud9 IDE, to initialize the `main` branch:
+
+## Deployment Validation
+
+To verify a successful deployment of this guidance, open [CloudFormation console](https://console.aws.amazon.com/cloudformation/home), and verify the status of the stack infrastructure stack is `CREATE_COMPLETE`. For example, if your `WORKLOAD_NAME` parameter is `Ada`, CloudFormation will reflect that the `Ada-Toolchain` stack has a `CREATE_COMPLETE` status.
+
+## Running the Guidance
+
+### Quality Assurance
+
+Once the deployment has been validated, you can deploy the infrastructure into the QA stage, as part of an LLMOps pipeline, using the following steps:
+
+1. Once the toolchain stack has been deployed, use the Cloud9 IDE, to initialize the `main` branch:
     ```bash
     rm -rf .git && \
     git init --initial-branch=main
     ```
-6. Add the newly **AWS CodeCommit** repository as the upstream origin, substituting the appropriate `WORKLOAD_NAME`, and `REGION` parameters:
+2. Add the newly **AWS CodeCommit** repository as the upstream origin, substituting the appropriate `WORKLOAD_NAME`, and `REGION` parameters. For example if your `WORKLOAD_NAME` parameter is `Ada`, and the `REGION` is `us-east-1`, the the repository url is `https://git-codecommit.us-east-1.amazonaws.com/v1/repos/ada`,
     ```bash
     git remote add origin https://git-codecommit.<REGION>.amazonaws.com/v1/repos/<WORKLOAD_NAME>
     ```
-7. Add the source code to to trigger a CI/CD/CT pipeline execution.
+    >__NOTE:__ The `WORKLOAD_NAME` is lower case.
+3. Add the source code to to trigger a CI/CD/CT pipeline execution.
     ```bash
     git add -A
     
@@ -157,23 +173,22 @@ All features for this guidance are only available in the _US East (N. Virginia)_
     
     git push --set-upstream origin main
     ```
+4. Open the [CodePipeline](https://console.aws.amazon.com/codesuite/codepipeline/pipelines) console, and click on the LLMOps pipeline for the workload. For example, if your `WORKLOAD_NAME` parameter is `Ada`, CodePipeline will reflect that the `Ada-Pipeline`  is `In progress`.
 
-Make any code changes to subsequently optimize the guidance for your use case. Committing these changes will trigger a subsequent continuous integration, and deployment of the deployed production stack.
+<p align="center">
+    <img src="assets/images/qa_stage.png" alt="QA Stage" style="width: 53em;" />
+</p>
 
-## Deployment Validation
-
-To verify a successful deployment of this guidance, open [CloudFormation console](https://console.aws.amazon.com/cloudformation/home), and verify the status of the stack infrastructure stack is `CREATE_COMPLETE`. For example, if your `WORKLOAD_NAME` parameter is `Ada`, CloudFormation will reflect that the `Ada-DEV` stack has a `CREATE_COMPLETE` status.
-
-## Running the Guidance
+Once the `QA` stage of the pipeline has been deplyed, and the `SystemTest` stage action is successful, idicating the backend infrastrcuture is functionaing, you can hydrate the vector store.
 
 ### Hydrating the vector store
 
 The following steps will demonstrate how to hydrate the **Amazon OpenSearch Service** vector database for RAG:
 
 1. Use provided copy of [Treasure Island by Robert Louis Stevenson](assets/data/pg120.txt) to test vector store hydration and RAG.
-2. Using the AWS Console, navigate to Amazon S3 service, and select the bucket with the following format, `<WORKLOAD NAME>-prod-<REGION>-<ACCOUNT NUMBER>`. For example,  `aida-prod-us-west-2-123456789`.
+2. Using the AWS Console, navigate to Amazon S3 service, and select the bucket with the following format, `<WORKLOAD NAME>-qa-<REGION>-<ACCOUNT NUMBER>`. For example,  `ada-qa-us-east-1-123456789`.
 3. Upload the Treasure Island File, by clicking on the upload button, and selecting the file `pg120.txt` file. This will trigger the **AWS Lambda** function that starts a an **Amazon SageMaker Processing Job** to hydrate the **Amazon OpenSearch Service** database.
-3. Using the AWS console, search for, and click on the **Amazon SageMaker** service to open the service console. Using the navigation panel on the left-hand side, expand the `Processing` option, and then select `Processing jobs`. You'll see a processing job has been started, for example `Ada-RAG-Ingest-01-21-20-13-20`. This jobs executes the process of chunking the ebook data, converting it to embeddings, and hydrating the database. 
+3. Open the [SageMaker](https://console.aws.amazon.com/sagemaker) console. Using the navigation panel on the left-hand side, expand the `Processing` option, and then select `Processing jobs`. You'll see a processing job has been started, for example `Ada-RAG-Ingest-01-21-20-13-20`. This jobs executes the process of chunking the ebook data, converting it to embeddings, and hydrating the database. 
 4. Clink on the running processing job to view its configuration. Under the `Monitoring`, click the `View logs` link to see see the processing logs for your job in **Amazon CloudWatch**. After roughly 5 minutes, the log stream becomes available, and after clicking on the log stream, you will see that each line of the log output represents the successful processing of a chunk of the text inserted into the vector store. For example:
 
 <p align="center">
@@ -214,6 +229,10 @@ An Unreal Engine sample project, [AmazonPollyMetaHuman](https://artifacts.kits.e
 10. Using the Unreal Editor, click the `Compile` button to recompile the C++ code.
 11. Once the updated code has been compiled, click the `Launch` button to interact with the ___Ada___ NPC.
 
+## Next Steps
+
+Review the [Continuous Tuning using FMOps](https://catalog.us-east-1.prod.workshops.aws/workshops/90992473-01e8-42d6-834f-9baf866a9057/en-US/5-continuous-tuning) section of the **Operationalize Generative AI Applications using LLMOps** workshop for a step-by-step guide to implementing continuous fine-tuning of a custom foundation model for the use case.
+
 ## Cleanup
 
 To delete the deployed resources, use the AWS CDK CLI to run the following steps:
@@ -227,9 +246,9 @@ To delete the deployed resources, use the AWS CDK CLI to run the following steps
     cdk destroy
     ```
 3. When prompted, `Are you sure you want to delete`, enter `y` to confirm stack deletion.
+4. Use the [CloudFormation](https://console.aws.amazon.com/cloudformation/home) console to manually delete the following stacks in order. For example, if your `WORKLOAD_NAME` parameter is `Ada`, CloudFormation will reflect that the `QA` stack is `Ada-QA`.
+    - <WORKLOAD_NAME>-Tuning
+    - <WORKLOAD_NAME>-PROD
+    - <WORKLOAD_NAME>QA
 
 >__NOTE:__ Deleting the deployed resources will not delete the __Amazon S3__ bucket, in order to protect any training data already stored. See the [Deleting a bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/delete-bucket.html) section of the __Amazon Simple Storage Service__ user guide for the various ways to delete the S3 bucket.
-
-## Next Steps
-
-Review the [Continuous Tuning using FMOps](https://catalog.us-east-1.prod.workshops.aws/workshops/90992473-01e8-42d6-834f-9baf866a9057/en-US/5-continuous-tuning) section of the **Operationalize Generative AI Applications using LLMOps** workshop for a step-by-step guide to implementing continuous fine-tuning of a foundation model for the use case.

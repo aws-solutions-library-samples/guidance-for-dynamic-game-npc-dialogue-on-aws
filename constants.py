@@ -1,5 +1,5 @@
 WORKLOAD_NAME = "Ada"
-REGION = ""
-SAGEMAKER_DOMAIN_ID = ""
+REGION = "us-east-1"
+SAGEMAKER_DOMAIN_ID = "d-1azsbeqnstug"
 QA_ENV_NAME = "QA"
 PROD_ENV_NAME = "PROD"

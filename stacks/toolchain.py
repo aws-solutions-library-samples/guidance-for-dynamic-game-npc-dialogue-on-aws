@@ -95,22 +95,22 @@ class ToolChainStack(cdk.Stack):
         )
 
         # Add Production Stage
-        ToolChainStack._add_stage(
-            pipeline=pipeline,
-            stage_name=constants.PROD_ENV_NAME,
-            stage_account=self.account,
-            stage_region=self.region,
-            model_parameter_name="CustomModelName"
-        )
+        # ToolChainStack._add_stage(
+        #     pipeline=pipeline,
+        #     stage_name=constants.PROD_ENV_NAME,
+        #     stage_account=self.account,
+        #     stage_region=self.region,
+        #     model_parameter_name="CustomModelName"
+        # )
 
         # Add tuning stack as CT stage
-        ToolChainStack._add_stage(
-            pipeline=pipeline,
-            stage_name="TUNING",
-            stage_account=self.account,
-            stage_region=self.region,
-            model_parameter_name="CustomModelName"
-        )
+        # ToolChainStack._add_stage(
+        #     pipeline=pipeline,
+        #     stage_name="TUNING",
+        #     stage_account=self.account,
+        #     stage_region=self.region,
+        #     model_parameter_name="CustomModelName"
+        # )
 
     @staticmethod
     def _add_stage(pipeline: _pipelines.CodePipeline, stage_name: str, stage_account: str, stage_region: str, model_parameter_name: str=None) -> None:
@@ -133,9 +133,7 @@ class ToolChainStack(cdk.Stack):
                         "SystemTests",
                         env_from_cfn_outputs={
                             "TEXT_ENDPOINT": infrastructure.text_apigw_output,
-                            "RAG_ENDPOINT": infrastructure.rag_apigw_output,
-                            "IMAGE_ENDPOINT": infrastructure.image_apigw_output,
-                            "APP_ENDPOINT": infrastructure.web_app_url,
+                            "RAG_ENDPOINT": infrastructure.rag_apigw_output
                         },
                         install_commands=[
                             "printenv",
