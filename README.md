@@ -149,7 +149,7 @@ All features for this guidance are only available in the _US East (N. Virginia)_
 
 ## Deployment Validation
 
-To verify a successful deployment of this guidance, open [CloudFormation console](https://console.aws.amazon.com/cloudformation/home), and verify the status of the stack infrastructure stack is `CREATE_COMPLETE`. For example, if your `WORKLOAD_NAME` parameter is `Ada`, CloudFormation will reflect that the `Ada-Toolchain` stack has a `CREATE_COMPLETE` status.
+To verify a successful deployment of this guidance, open [CloudFormation](https://console.aws.amazon.com/cloudformation/home) console, and verify the status of the stack infrastructure stack is `CREATE_COMPLETE`. For example, if your `WORKLOAD_NAME` parameter is `Ada`, CloudFormation will reflect that the `Ada-Toolchain` stack has a `CREATE_COMPLETE` status.
 
 ## Running the Guidance
 
@@ -178,7 +178,7 @@ Once the deployment has been validated, you can deploy the infrastructure into t
 4. Open the [CodePipeline](https://console.aws.amazon.com/codesuite/codepipeline/pipelines) console, and click on the LLMOps pipeline for the workload. For example, if your `WORKLOAD_NAME` parameter is `Ada`, CodePipeline will reflect that the `Ada-Pipeline`  is `In progress`.
 
 <p align="center">
-    <img src="assets/images/qa_stage.png" alt="QA Stage" style="width: 53em;" />
+    <img src="assets/images/qa_stage.png" alt="QA Stage" style="width: 43em;" />
 </p>
 
 Once the `QA` stage of the pipeline is complete, and the `SystemTest` stage action is successful, indicating the backend infrastructure is deployed, you can hydrate the vector store.
