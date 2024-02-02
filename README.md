@@ -32,7 +32,7 @@ ___If you're looking for quick and easy step by step guide to get started, check
 
 ### Cost
 
-_You are responsible for the cost of the AWS services used while running this Guidance. As of January 2024, the cost for running this Guidance with the default settings in the `us-east-1` (N. Virginia) AWS Region is approximately $248.57 per month for processing 100 records._
+_You are responsible for the cost of the AWS services used while running this Guidance. As of January 2024, the cost for running this Guidance with the default settings in the `us-east-1` (N. Virginia) AWS Region is approximately $590.59 per month for processing 100 records._
 
 For example, the following table shows a break-down of approximate costs _(per month)_ to process 100 requests, using an **Amazon OpenSearch Service** vector database for RAG:
 
