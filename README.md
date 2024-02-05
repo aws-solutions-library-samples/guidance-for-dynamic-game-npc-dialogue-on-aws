@@ -1,6 +1,6 @@
 # Guidance for Dynamic Non-Player Character (NPC) Dialogue on AWS
 
-## Table of Content (required)
+## Table of Content
 
 1. [Overview](#overview)
     - [Architecture](#architecture)
