@@ -187,7 +187,7 @@ Once the `QA` stage of the pipeline is complete, and the `SystemTest` stage acti
 
 The following steps will demonstrate how to hydrate the **Amazon OpenSearch Service** vector database for RAG:
 
-1. Use provided copy of [Treasure Island by Robert Louis Stevenson](assets/data/pg120.txt) to test vector store hydration and RAG.
+1. Download a copy of [Treasure Island by Robert Louis Stevenson](https://www.gutenberg.org/ebooks/120.txt.utf-8) to test vector store hydration and RAG.
 2. Using the AWS Console, navigate to Amazon S3 service, and select the bucket with the following format, `<WORKLOAD NAME>-qa-<REGION>-<ACCOUNT NUMBER>`. For example,  `ada-qa-us-east-1-123456789`.
 3. Upload the Treasure Island File, by clicking on the upload button, and selecting the file `pg120.txt` file. This will trigger the **AWS Lambda** function that starts a an **Amazon SageMaker Processing Job** to hydrate the **Amazon OpenSearch Service** database.
 3. Open the [SageMaker](https://console.aws.amazon.com/sagemaker) console. Using the navigation panel on the left-hand side, expand the `Processing` option, and then select `Processing jobs`. You'll see a processing job has been started, for example `Ada-RAG-Ingest-01-21-20-13-20`. This jobs executes the process of chunking the ebook data, converting it to embeddings, and hydrating the database. 
@@ -197,7 +197,7 @@ The following steps will demonstrate how to hydrate the **Amazon OpenSearch Serv
     <img src="assets/images/sagemaker_job_log.png" alt="SageMaker Log" style="width: 33em;" />
 </p>
 
->__NOTE:__ The [Treasure Island by Robert Louis Stevenson](assets/data/pg120.txt) is available for reuse under the terms of the Project Gutenberg License, included with the ebook or online at www.gutenberg.org.
+>__NOTE:__ The [Treasure Island by Robert Louis Stevenson](https://www.gutenberg.org/ebooks/120.txt.utf-8) is available for reuse under the terms of the Project Gutenberg License, included with the ebook or online at www.gutenberg.org.
 
 ### Unreal Engine sample project
 
@@ -207,11 +207,12 @@ An Unreal Engine sample project, [AmazonPollyMetaHuman](https://artifacts.kits.e
 2. Select the `Outputs` tab, and capture the values for `TextApiEndpointUrl`, and `RagApiEndpointUrl`.
 3. Download, the [AmazonPollyMetaHuman](https://artifacts.kits.eventoutfitters.aws.dev/industries/games/AmazonPollyMetaHuman.zip) zipped Unreal Engine project.
 4. Extract the `AmazonPollyMetaHuman` project folder to the `Unreal Projects` folder of the Unreal Engine development environment.
-5. Launch Unreal Engine 4.27, and open the `AmazonPollyMetaHuman` sample project.
-6. Using the Unreal Editor, select `File` --> `Generate Visual Studio Code Project` to use VS Code for editing source code.
-7. Using the Unreal Editor, select `File` --> `Open Visual Studio Code` to open the project for code editing.
-8. In VS Code, open the `/Source/AmazonPollyMetaHuman/Private/Private/SpeechComponent.cpp` file for editing.
-9. Navigate to the following code section, and replace the `ComboboxUri` variables with the `TextApiEndpointUrl`, and `RagApiEndpointUrl` CloudFormation outputs.
+5. Review the `README.md` file for the extracted project folder to confirm any additional setup items.
+6. Launch Unreal Engine 4.27, and open the `AmazonPollyMetaHuman` sample project.
+7. Using the Unreal Editor, select `File` --> `Generate Visual Studio Code Project` to use VS Code for editing source code.
+8. Using the Unreal Editor, select `File` --> `Open Visual Studio Code` to open the project for code editing.
+9. In VS Code, open the `/Source/AmazonPollyMetaHuman/Private/Private/SpeechComponent.cpp` file for editing.
+10. Navigate to the following code section, and replace the `ComboboxUri` variables with the `TextApiEndpointUrl`, and `RagApiEndpointUrl` CloudFormation outputs.
     ```cpp
         void USpeechComponent::CallAPI(const FString Text, const FString Uri)
         {
@@ -228,9 +229,9 @@ An Unreal Engine sample project, [AmazonPollyMetaHuman](https://artifacts.kits.e
                 ComboBoxUri = "<ADD `RagApiEndpointUrl` VALUE FROM GUIDANCE DEPLOYMENT>";
             }
     ```
-10. Save the `SpeechComponent.cpp` file, and close VS Code.
-11. Using the Unreal Editor, click the `Compile` button to recompile the C++ code.
-12. Once the updated code has been compiled, click the `Play` button to interact with the ___Ada___ NPC.
+11. Save the `SpeechComponent.cpp` file, and close VS Code.
+12. Using the Unreal Editor, click the `Compile` button to recompile the C++ code.
+13. Once the updated code has been compiled, click the `Play` button to interact with the ___Ada___ NPC.
 
 ## Next Steps
 
