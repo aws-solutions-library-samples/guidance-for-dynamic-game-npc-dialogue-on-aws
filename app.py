@@ -3,6 +3,8 @@ import boto3
 import constants
 import aws_cdk as cdk
 
+import cdk_nag
+
 from stacks.infrastructure import InfrastructureStack
 from stacks.toolchain import ToolChainStack
 
@@ -27,5 +29,7 @@ ToolChainStack(
         region=constants.REGION
     )
 )
+
+Aspects.of(app).add(cdk_nag.AwsSolutionsChecks())
 
 app.synth()
