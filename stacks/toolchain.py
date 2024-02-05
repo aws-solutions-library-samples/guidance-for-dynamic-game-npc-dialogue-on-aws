@@ -15,6 +15,7 @@ from aws_cdk import (
 from stacks.infrastructure import InfrastructureStack
 from stacks.tuning import TuningStack
 from constructs import Construct
+from cdk_nag import NagSuppressions
 
 class ToolChainStack(cdk.Stack):
 
@@ -52,6 +53,18 @@ class ToolChainStack(cdk.Stack):
             string_value="PLACEHOLDER"
         )
 
+        # Create the Pipeline synth role
+        synth_role = _iam.Role(
+            self,
+            "SynthRole",
+            assumed_by=_iam.CompositePrincipal(
+                _iam.ServicePrincipal("codebuild.amazonaws.com"),
+            ),
+            managed_policies=[
+                _iam.ManagedPolicy.from_aws_managed_policy_name("AdministratorAccess")
+            ]
+        )
+
         # Create the CDK Pipeline skeleton
         pipeline = _pipelines.CodePipeline(
             self,
@@ -63,16 +76,7 @@ class ToolChainStack(cdk.Stack):
             synth=_pipelines.CodeBuildStep(
                 "Synth",
                 input=source,
-                role=_iam.Role(
-                    self,
-                    "SynthRole",
-                    assumed_by=_iam.CompositePrincipal(
-                        _iam.ServicePrincipal("codebuild.amazonaws.com"),
-                    ), 
-                    managed_policies=[
-                        _iam.ManagedPolicy.from_aws_managed_policy_name("AdministratorAccess")
-                    ]
-                ),
+                role=synth_role,
                 install_commands=[
                     "printenv",
                     f"npm install -g aws-cdk@{context.get('cdk-version')}",
@@ -82,7 +86,7 @@ class ToolChainStack(cdk.Stack):
                 commands=[
                     "cdk synth"
                 ]
-            )
+            ),
         )
 
         # Add QA Stage
@@ -110,6 +114,36 @@ class ToolChainStack(cdk.Stack):
         #     stage_account=self.account,
         #     stage_region=self.region,
         #     model_parameter_name="CustomModelName"
+        # )
+
+        # AWS CDK Pipeline CDK NAG suppressions
+        # NagSuppressions.add_resource_suppressions(
+        #     construct=synth_role,
+        #     suppressions=[
+        #         {
+        #             "id": "AwsSolutions-IAM4",
+        #             "reason": "CDK Pipeline synthesis requires 'AdministratorAccess' as cloudformation execution policy"
+        #         }
+        #     ],
+        #     apply_to_children=True
+        # )
+        # NagSuppressions.add_resource_suppressions(
+        #     construct=pipeline,
+        #     suppressions=[
+        #         {
+        #             "id": "AwsSolutions-KMS5",
+        #             "reason": "Using the default CDK Pipeline construct, KMS Key settings are managed by the CDK construct"
+        #         },
+        #         {
+        #             "id": "AwsSolutions-S1",
+        #             "reason": "Using the default CDK Pipeline construct, S3 artifacts bucket is managed by the CDK construct"
+        #         },
+        #         {
+        #             "id": "AwsSolutions-IAM5",
+        #             "reason": "Using the default CDK Pipeline construct, S3 artifacts bucket is managed by the CDK construct"
+        #         }
+        #     ],
+        #     apply_to_children=True
         # )
 
     @staticmethod

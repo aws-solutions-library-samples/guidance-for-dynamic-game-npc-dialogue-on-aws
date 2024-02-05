@@ -59,11 +59,11 @@ These deployment instructions are optimized to best work on a pre-configured **A
 
 Before deploying the guidance code, ensure that the following required tools have been installed:
 
-- AWS Cloud Development Kit (CDK) >= 2.125.0
+- AWS Cloud Development Kit (CDK) >= 2.126.0
 - Python >= 3.8
 - NodeJS >= 18
 
->__NOTE:__ The Guidance has been tested using AWS CDK version 2.125.0. If you wish to update the CDK application to later version, make sure to update the `requirements.txt`, and `cdk.json` files, in the root of the repository, with the updated version of the AWS CDK.
+>__NOTE:__ The Guidance has been tested using AWS CDK version 2.126.0. If you wish to update the CDK application to later version, make sure to update the `requirements.txt`, and `cdk.json` files, in the root of the repository, with the updated version of the AWS CDK.
 
 - Unreal Engine 4.26 or 4.27
 - Microsoft Visual Studio Code for Unreal Engine 4 C++ development.

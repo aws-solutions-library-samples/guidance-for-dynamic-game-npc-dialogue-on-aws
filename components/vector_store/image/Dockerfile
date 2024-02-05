@@ -5,11 +5,11 @@ RUN apt-get -y update && apt-get install -y --no-install-recommends \
     unzip \
     && rm -rf /var/lib/apt/lists/*
 
-RUN addgroup --gid  1001 nonroot && \
-    adduser --uid 1001 --gid 1001 --disabled-password --gecos "" nonroot && \
-    echo 'nonroot ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+# RUN addgroup --gid  1001 nonroot && \
+#     adduser --uid 1001 --gid 1001 --disabled-password --gecos "" nonroot && \
+#     echo 'nonroot ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
-USER nonroot 
+# USER nonroot 
 
 COPY requirements.txt /tmp/
 

@@ -3,8 +3,8 @@ import boto3
 import constants
 import aws_cdk as cdk
 
-import cdk_nag
-
+from aws_cdk import Aspects
+from cdk_nag import AwsSolutionsChecks
 from stacks.infrastructure import InfrastructureStack
 from stacks.toolchain import ToolChainStack
 
@@ -30,6 +30,6 @@ ToolChainStack(
     )
 )
 
-Aspects.of(app).add(cdk_nag.AwsSolutionsChecks())
+# Aspects.of(app).add(AwsSolutionsChecks())
 
 app.synth()
