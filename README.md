@@ -28,7 +28,7 @@ ___If you're looking for quick and easy step by step guide to get started, check
 
 ### Architecture
 
-![Architecture](assets/images/architecture.png)
+![Architecture](assets/architecture.png)
 
 ### Cost
 
@@ -178,7 +178,7 @@ Once the deployment has been validated, you can deploy the infrastructure into t
 4. Open the [CodePipeline](https://console.aws.amazon.com/codesuite/codepipeline/pipelines) console, and click on the LLMOps pipeline for the workload. For example, if your `WORKLOAD_NAME` parameter is `Ada`, CodePipeline will reflect that the `Ada-Pipeline`  is `In progress`.
 
 <p align="center">
-    <img src="assets/images/qa_stage.png" alt="QA Stage" style="width: 43em;" />
+    <img src="assets/qa_stage.png" alt="QA Stage" style="width: 43em;" />
 </p>
 
 Once the `QA` stage of the pipeline is complete, and the `SystemTest` stage action is successful, indicating the backend infrastructure is deployed, you can hydrate the vector store.
@@ -194,7 +194,7 @@ The following steps will demonstrate how to hydrate the **Amazon OpenSearch Serv
 4. Clink on the running processing job to view its configuration. Under the `Monitoring`, click the `View logs` link to see see the processing logs for your job in **Amazon CloudWatch**. After roughly 5 minutes, the log stream becomes available, and after clicking on the log stream, you will see that each line of the log output represents the successful processing of a chunk of the text inserted into the vector store. For example:
 
 <p align="center">
-    <img src="assets/images/sagemaker_job_log.png" alt="SageMaker Log" style="width: 33em;" />
+    <img src="assets/sagemaker_job_log.png" alt="SageMaker Log" style="width: 33em;" />
 </p>
 
 >__NOTE:__ The [Treasure Island by Robert Louis Stevenson](https://www.gutenberg.org/ebooks/120.txt.utf-8) is available for reuse under the terms of the Project Gutenberg License, included with the ebook or online at www.gutenberg.org.
