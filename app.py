@@ -14,6 +14,7 @@ app = cdk.App()
 # InfrastructureStack(
 #     app,
 #     f"{constants.WORKLOAD_NAME}-DEV",
+#     description="Guidance for Dynamic Non-Player Character (NPC) Dialogue on AWS (SO9327)",
 #     env=cdk.Environment(
 #         account=boto3.client("sts").get_caller_identity().get("Account"),
 #         region=constants.REGION
@@ -24,6 +25,7 @@ app = cdk.App()
 ToolChainStack(
     app,
     f"{constants.WORKLOAD_NAME}-Toolchain",
+    description="Guidance for Dynamic Non-Player Character (NPC) Dialogue on AWS (SO9327)",
     env=cdk.Environment(
         account=boto3.client("sts").get_caller_identity().get("Account"),
         region=constants.REGION
@@ -31,5 +33,4 @@ ToolChainStack(
 )
 
 # Aspects.of(app).add(AwsSolutionsChecks())
-
 app.synth()
