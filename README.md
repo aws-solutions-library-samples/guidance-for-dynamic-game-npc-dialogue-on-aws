@@ -55,6 +55,8 @@ These deployment instructions are optimized to best work on a pre-configured **A
 
 >__NOTE:__ A Github [dev container](https://docs.github.com/en/codespaces/setting-up-your-project-for-codespaces/adding-a-dev-container-configuration/introduction-to-dev-containers) configuration has been provided should you wish to use [GitHub codespaces](https://docs.github.com/en/codespaces), or [Visual Studio Code Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers) as your development environment.
 
+The Unreal Engine sample project was tested using a **Windows 2019 (g4dn.4xlarge)** EC2 instance. See the [Stream a remote environment with NICE DCV over QUIC UDP for a 4K monitor at 60 FPS](https://aws.amazon.com/blogs/gametech/stream-remote-environment-nice-dcv-quic-udp-4k-monitor-60-fps/) blog post, for more information on setting up a similar environment.
+
 ### Third-party tools
 
 Before deploying the guidance code, ensure that the following required tools have been installed:
@@ -65,8 +67,9 @@ Before deploying the guidance code, ensure that the following required tools hav
 
 >__NOTE:__ The Guidance has been tested using AWS CDK version 2.126.0. If you wish to update the CDK application to later version, make sure to update the `requirements.txt`, and `cdk.json` files, in the root of the repository, with the updated version of the AWS CDK.
 
-- Unreal Engine 4.26 or 4.27
-- Microsoft Visual Studio Code for Unreal Engine 4 C++ development.
+- Unreal Engine 4.26 or 4.27.
+- Microsoft Visual Studio 2019 for Unreal Engine 4 C++ development.
+- Microsoft Visual Studio Code for editing.
 
 >__NOTE:__ If you need help with these setup steps, refer to the Unreal Engine 4 documentation, especially "Setting Up Visual Studio for Unreal Engine". The  was only tested with Visual Studio 2019 with Unreal Engine 4.27. The Unreal Engine sample __DOES NOT__ work with Ureal Engine 5.
 
@@ -211,12 +214,11 @@ An Unreal Engine sample project, [AmazonPollyMetaHuman](https://artifacts.kits.e
 6. Select the `Outputs` tab, and capture the values for `TextApiEndpointUrl`, and `RagApiEndpointUrl`.
 7. Download, the [AmazonPollyMetaHuman](https://artifacts.kits.eventoutfitters.aws.dev/industries/games/AmazonPollyMetaHuman.zip) zipped Unreal Engine project.
 8. Extract the `AmazonPollyMetaHuman` project folder to the `Unreal Projects` folder of the Unreal Engine development environment.
-9. Review the `README.md` file for the extracted project folder to confirm any additional setup items.
-10. Launch Unreal Engine 4.27, and open the `AmazonPollyMetaHuman` sample project.
-11. Using the Unreal Editor, select `File` --> `Generate Visual Studio Code Project` to use VS Code for editing source code.
-12. Using the Unreal Editor, select `File` --> `Open Visual Studio Code` to open the project for code editing.
-13. In VS Code, open the `/Source/AmazonPollyMetaHuman/Private/Private/SpeechComponent.cpp` file for editing.
-14. Navigate to the following code section, and replace the `ComboboxUri` variables with the `TextApiEndpointUrl`, and `RagApiEndpointUrl` CloudFormation outputs.
+9. Launch Unreal Engine 4.27, and open the `AmazonPollyMetaHuman` sample project.
+10. Using the Unreal Editor, select `File` --> `Generate Visual Studio Code Project` to use VS Code for editing source code.
+11. Using the Unreal Editor, select `File` --> `Open Visual Studio Code` to open the project for code editing.
+12. In VS Code, open the `/Source/AmazonPollyMetaHuman/Private/Private/SpeechComponent.cpp` file for editing.
+13. Navigate to the following code section, and replace the `ComboboxUri` variables with the `TextApiEndpointUrl`, and `RagApiEndpointUrl` CloudFormation outputs.
     ```cpp
         void USpeechComponent::CallAPI(const FString Text, const FString Uri)
         {
@@ -233,9 +235,9 @@ An Unreal Engine sample project, [AmazonPollyMetaHuman](https://artifacts.kits.e
                 ComboBoxUri = "<ADD `RagApiEndpointUrl` VALUE FROM GUIDANCE DEPLOYMENT>";
             }
     ```
-15. Save the `SpeechComponent.cpp` file, and close VS Code.
-16. Using the Unreal Editor, click the `Compile` button to recompile the C++ code.
-17. Once the updated code has been compiled, click the `Play` button to interact with the ___Ada___ NPC.
+14. Save the `SpeechComponent.cpp` file, and close VS Code.
+15. Using the Unreal Editor, click the `Compile` button to recompile the C++ code.
+16. Once the updated code has been compiled, click the `Play` button to interact with the ___Ada___ NPC.
 
 ## Next Steps
 
