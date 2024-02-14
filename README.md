@@ -90,8 +90,9 @@ This deployment requires that you have an existing [Amazon SageMaker Domain](htt
 
 ### aws cdk bootstrap
 
-This Guidance uses AWS CDK. If you are using `aws-cdk` for first time, please see the [Bootstrapping](https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html) section of the __AWS Cloud Development Kit (AWS CDK) v2__ developer guide, to provision the required resources, before you can deploy AWS CDK apps into an AWS environment.
+This Guidance uses AWS CDK. If you are using `aws-cdk` for the first time, please see the [Bootstrapping](https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html) section of the __AWS Cloud Development Kit (AWS CDK) v2__ developer guide, to provision the required resources, before you can deploy AWS CDK apps into an AWS environment.
 
+>__NOTE:__ Since the guidance leveraged CDK PIpelines, it is recommended that you re-bootstrap the CDK, even if you have already bootstrapped the CDK.
 
 ### Supported Regions
 
@@ -238,6 +239,8 @@ An Unreal Engine sample project, [AmazonPollyMetaHuman](https://artifacts.kits.e
 14. Save the `SpeechComponent.cpp` file, and close VS Code.
 15. Using the Unreal Editor, click the `Compile` button to recompile the C++ code.
 16. Once the updated code has been compiled, click the `Play` button to interact with the ___Ada___ NPC.
+
+>__NOTE:__ Review the detailed [installation guide](assets/docs/metahuman_windows.md) for Windows 2019 for more information on installing, and configuring both Unreal Engine, and the sample project.
 
 ## Next Steps
 
