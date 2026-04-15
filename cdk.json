@@ -61,8 +61,8 @@
     "@aws-cdk/aws-cloudwatch-actions:changeLambdaPermissionLogicalIdForLambdaAction": true,
     "toolchain-context": {
       "cdk-version": "2.178.2",
-      "bedrock-text-model-id": "anthropic.claude-3-5-haiku-20241022-v1:0",
-      "bedrock-embedding-model-id": "amazon.titan-embed-text-v1",
+      "bedrock-text-model-id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "bedrock-embedding-model-id": "amazon.titan-embed-text-v2:0",
       "embedding-index-name": "rag_embeddings",
       "tuning-epoch-count": "1",
       "tuning-batch-size": "1",

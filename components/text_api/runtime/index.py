@@ -122,8 +122,7 @@ def get_prediction(question: str) -> str:
                     }
                 ],
                 "temperature": 0.5,
-                "top_k": 250,
-                "top_p": 1
+                "top_k": 250
             }
         ),
         modelId=TEXT_MODEL_ID,

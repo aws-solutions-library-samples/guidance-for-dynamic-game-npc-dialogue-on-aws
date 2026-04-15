@@ -68,7 +68,7 @@ def verify_index(endpoint: str, index: str, username: str, password: str) -> Any
             "properties": {
                 "vector_field": {  # k-NN vector field
                     "type": "knn_vector",
-                    "dimension": 1536,  # Dimension of the vector
+                    "dimension": 1024,  # Dimension of the vector
                     "similarity": "cosine"
                 },
                 "file_name": {
